@@ -22,7 +22,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geist.variable}`}>
       <body className="flex min-h-svh flex-col">
-        <Providers>{children}
+        <Providers>
+            {children}
           <Toaster/>
         </Providers>
       </body>
