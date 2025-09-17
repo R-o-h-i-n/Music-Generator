@@ -1,0 +1,71 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Build and Cache
+# ----------------
+# Next.js
+/.next/
+/out/
+
+# General
+/build
+*.tsbuildinfo
+
+# Testing
+# -------
+/coverage
+
+# Database
+# --------
+/prisma/db.sqlite
+/prisma/db.sqlite-journal
+db.sqlite
+# Add your Prisma Client output directory here if it's not in node_modules
+# For example: /prisma/client
+
+# Local Environment
+# -----------------
+# do not commit any .env files to git, except for the .env.example file. https://create.t3.gg/en/usage/env-variables
+.env
+.env*.local
+
+# Logs
+# ----
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+# IDEs and Editors
+# ----------------
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS-generated files
+# ------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Secrets
+# -------
+*.pem
+
+# Deployment
+# ----------
+# Vercel
+.vercel
+
+# Next.js
+next-env.d.ts

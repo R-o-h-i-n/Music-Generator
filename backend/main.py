@@ -258,7 +258,7 @@ class MusicGenServer:
         return GenerateMusicResponse(audio_data = audio_b64)
     
     
-    # TYPE-1 => S3 Music (.wav) + Thumbnail (.png) Generation with a description as input
+    # TYPE-1 => S3 Music (.wav) + Thumbnail (.png) Generation with a song description as input
     @modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
     def generate_from_description(self, request: GenerateFromDescriptionRequest) -> GenerateMusicResponseS3:
         #Generating a prompt
