@@ -25,7 +25,7 @@ import {
 } from "../ui/dropdown-menu";
 import { RenameDialog } from "./rename-dialog";
 import { useRouter } from "next/navigation";
-
+import { usePlayerStore } from "~/stores/use-player-store";
 
 export interface Track {
   id: string;
@@ -57,6 +57,8 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
       track.prompt?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
+  const setTrack = usePlayerStore((state) => state.setTrack);
+
   const handleTrackSelect = async (track: Track) => {
     if (loadingTrackId) return;
     setLoadingTrackId(track.id);
@@ -64,6 +66,14 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
     setLoadingTrackId(null);
 
     // Play song in the playbar
+    setTrack({
+      id: track.id,
+      title: track.title,
+      url: playUrl,
+      artwork: track.thumbnailUrl,
+      prompt: track.prompt,
+      createdByUsername: track.createdByUserName,
+    });
   };
 
   const handleRefresh = async () => {
@@ -236,7 +246,7 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
                         </Button>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" className="h-8 w-8" size="icon">
                               <MoreHorizontal />
                             </Button>
                           </DropdownMenuTrigger>
