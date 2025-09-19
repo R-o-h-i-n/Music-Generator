@@ -4,14 +4,16 @@ import { env } from "~/env";
 
 
 export const generateSong = inngest.createFunction(
-  { id: "generate-song", concurrency: {
-    limit: 1,
-    key: "event.data.userId"
+  { 
+    id: "generate-song", 
+    concurrency: {
+        limit: 1,
+        key: "event.data.userId"
     },
     onFailure: async ({event, error}) => {
         await db.song.update ({
             where: {
-                id: event?.data?.event?.data?.songId,
+                id: (event?.data?.event?.data as { songId: string }).songId,
             },
             data: {
                 status: "failed",
@@ -26,89 +28,96 @@ export const generateSong = inngest.createFunction(
         userId : string;
     };
 
-    const {userId, credits, endpoint, body} = await step.run("check-credits", async() => {
-        const song = await db.song.findUniqueOrThrow({
-            where: {
-                id: songId
-            },
-            select: {
-                user: {
-                    select: {
-                        id: true,
-                        credits: true
-                    }
+    const {userId, credits, endpoint, body} = await step.run(
+        "check-credits", async() => {
+            const song = await db.song.findUniqueOrThrow({
+                where: {
+                    id: songId
                 },
-                prompt: true,
-                lyrics: true,
-                fullDescribedSong: true,
-                describedLyrics: true,
-                instrumental: true,
-                guidanceScale: true,
-                inferStep: true,
-                audioDuration: true,
-                seed: true,
-            },
-        });
+                select: {
+                    user: {
+                        select: {
+                            id: true,
+                            credits: true
+                        },
+                    },
+                    prompt: true,
+                    lyrics: true,
+                    fullDescribedSong: true,
+                    describedLyrics: true,
+                    instrumental: true,
+                    guidanceScale: true,
+                    inferStep: true,
+                    audioDuration: true,
+                    seed: true,
+                },
+            });
 
-        type RequestBody = {
-            guidance_scale?: number;
-            infer_step?: number;
-            audio_duration?: number;
-            seed?: number;
-            full_described_song?: string;
-            prompt?: string;
-            lyrics?: string;
-            described_lyrics?: string;
-            instrumental?: boolean;
-        }
+            type RequestBody = {
+                guidance_scale?: number;
+                infer_step?: number;
+                audio_duration?: number;
+                seed?: number;
+                full_described_song?: string;
+                prompt?: string;
+                lyrics?: string;
+                described_lyrics?: string;
+                instrumental?: boolean;
+            }
 
-        let endpoint = "";
-        let body: RequestBody = {};
+            let endpoint = "";
+            let body: RequestBody = {};
 
-        const commonParams = {
-            guidance_scale: song.guidanceScale ?? undefined,
-            infer_step: song.inferStep ?? undefined,
-            audio_duration: song.audioDuration ?? undefined,
-            seed: song.seed ?? undefined,
-            instrumental: song.instrumental ?? undefined,
-        }
+            const commonParams = {
+                guidance_scale: song.guidanceScale ?? undefined,
+                infer_step: song.inferStep ?? undefined,
+                audio_duration: song.audioDuration ?? undefined,
+                seed: song.seed ?? undefined,
+                instrumental: song.instrumental ?? undefined,
+            }
 
-        // TYPE-1 => Description of a song
-        if(song.fullDescribedSong) {
-            endpoint = env.GENERATE_FROM_DESCRIPTION;
-            body = {
-                full_described_song: song.fullDescribedSong,
-                ...commonParams,
+            // TYPE-1 => Description of a song
+            if(song.fullDescribedSong) {
+                endpoint = env.GENERATE_FROM_DESCRIPTION;
+                body = {
+                    full_described_song: song.fullDescribedSong,
+                    ...commonParams,
+                };
+            }
+
+            // TYPE-2 => Custom made : Lyrics + prompt
+            else if (song.lyrics && song.prompt) {
+                endpoint = env.GENERATE_WITH_LYRICS;
+                body = {
+                    lyrics: song.lyrics,
+                    prompt: song.prompt,
+                    ...commonParams,
+                };
+            }
+
+            // TYPE-3 => Custom made : prompt + described lyrics
+            else if (song.describedLyrics && song.prompt) {
+                endpoint = env.GENERATE_WITH_DESCRIBED_LYRICS;
+                body = {
+                    described_lyrics: song.describedLyrics,
+                    prompt: song.prompt,
+                    ...commonParams,
+                };
+            }
+
+            // Recheck endpoint (gem)
+            if (!endpoint) {
+                throw new Error("Could not determine generation endpoint. Invalid song data provided.");
+            }
+
+            return {
+                userId: song.user.id,
+                credits: song.user.credits,
+                endpoint: endpoint,
+                body: body,
             };
-        }
-
-        // TYPE-2 => Custom made : Lyrics + prompt
-        else if (song.lyrics && song.prompt) {
-            endpoint = env.GENERATE_WITH_DESCRIBED_LYRICS
-            body = {
-                lyrics: song.lyrics,
-                prompt: song.prompt,
-                ...commonParams,
-            };
-        }
-
-        // TYPE-3 => Custom made : prompt + described lyrics
-        else if (song.describedLyrics && song.prompt) {
-            endpoint = env.GENERATE_WITH_DESCRIBED_LYRICS;
-            body = {
-                described_lyrics: song.describedLyrics,
-                prompt: song.prompt,
-                ...commonParams,
-            };
-        }
-
-        return {
-            userId: song.user.id,
-            credits: song.user.credits,
-            endpoint: endpoint,
-            body: body,
-        };
-    });
+        },
+    );
 
     if (credits>0) {
         // Generate the song
@@ -135,12 +144,13 @@ export const generateSong = inngest.createFunction(
         })
 
         await step.run("update-song-result", async () => {
-            const responseData = response.ok ? ((await response.json()) as {
-                s3_key: string;
-                cover_image_s3_key: string;
-                categories: string[];
-            }) 
-            : null;
+            const responseData = response.ok 
+                ? ((await response.json()) as {
+                    s3_key: string;
+                    cover_image_s3_key: string;
+                    categories: string[];
+                }) 
+                : null;
 
             await db.song.update({
                 where: {
@@ -181,7 +191,6 @@ export const generateSong = inngest.createFunction(
                 },
             });
         });
-
     } else {
         // Set song status = "Not enough credits"
         await step.run("set-status-no-credits", async () => {

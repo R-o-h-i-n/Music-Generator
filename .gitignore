@@ -142,3 +142,36 @@ cython_debug/
 # OS-specific files
 .DS_Store
 Thumbs.db
+
+# === Node.js / Next.js ===
+
+# Dependencies
+/node_modules
+/.pnpm
+pnpm-lock.yaml
+
+# Build output
+/.next/
+/out/
+
+# Next.js cache
+/.swc/
+
+# Monorepo cache
+/.turbo/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables for Next.js
+.env.local
+.env.*.local
+!.env.example
+!.env.ci
+
+# === Common Editor Config ===
+.vscode/
+.idea/
