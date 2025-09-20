@@ -1,11 +1,6 @@
 "use server"
 
-import { Calendar, 
-         Home, 
-         Inbox, 
-         Search, 
-         Settings, 
-         User} from "lucide-react"
+import { User} from "lucide-react"
 
 import { Sidebar, 
          SidebarContent, 
@@ -49,7 +44,7 @@ export async function AppSidebar() {
             additionalLinks={[
                 {
                     label: "Customer Portal", 
-                    href: "/custormer-portal", 
+                    href: "/customer-portal", 
                     icon: <User/>,
                 }
             ]}

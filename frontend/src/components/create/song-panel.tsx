@@ -206,7 +206,7 @@ export function SongPanel() {
 
             <div className="flex flex-col gap-3">
               <label className="text-sm font-medium">Inspiration</label>
-              <div className="overflow-x-aud w-full whitespace-nowrap">
+              <div className="overflow-x-auto w-full whitespace-nowrap">
                 <div className="flex gap-2 pb-2">
                   {inspirationTags.map((tag) => (
                     <Button

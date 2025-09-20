@@ -1,5 +1,4 @@
 import "~/styles/globals.css";
-
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Providers } from "../../components/providers";
@@ -20,7 +19,7 @@ import SoundBar from "~/components/sound-bar";
 
 
 export const metadata: Metadata = {
-  title: "Music Generator",
+  title: "Home",
   description: "Music Generator",
   icons: [{ rel: "icon", url: "/guitar.ico" }],
 };

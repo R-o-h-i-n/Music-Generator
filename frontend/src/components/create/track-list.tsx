@@ -50,14 +50,13 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
   const [trackToRename, setTrackToRename] = useState<Track | null>(null);
 
   const router = useRouter();
+  const setTrack = usePlayerStore((state) => state.setTrack);
 
   const filteredTracks = tracks.filter(
     (track) =>
       track.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       track.prompt?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
-
-  const setTrack = usePlayerStore((state) => state.setTrack);
 
   const handleTrackSelect = async (track: Track) => {
     if (loadingTrackId) return;
@@ -169,11 +168,11 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
                       className="flex cursor-not-allowed items-center gap-4 rounded-lg p-3"
                     >
                       <div className="bg-muted flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-md">
-                        <Loader2 className="text-muted-foregorund h-6 w-6 animate-spin" />
+                        <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-muted-foregorund truncate text-sm font-medium">
+                        <h3 className="text-muted-foreground truncate text-sm font-medium">
                           Processing song...
                         </h3>
 
@@ -201,14 +200,14 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
                           />
                         ) : (
                           <div className="bg-muted flex h-full w-full items-center justify-center">
-                            <Music className="text-muted-foregorund h-6 w-6" />
-                          </div>
+                            <Music className=" h-6 w-6" /> 
+                          </div> // text-muted-foreground
                         )}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity group-hover:opacity-100">
                           {loadingTrackId === track.id ? (
                             <Loader2 className="animate-spin text-white" />
                           ) : (
-                            <Play className="text-white" />
+                            <Play className="text-white" /> // fill-white
                           )}
                         </div>
                       </div>
@@ -246,7 +245,11 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
                         </Button>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8" size="icon">
+                            <Button
+                              variant="ghost"
+                              className="h-8 w-8"
+                              size="icon"
+                            >
                               <MoreHorizontal />
                             </Button>
                           </DropdownMenuTrigger>
@@ -278,7 +281,7 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
             })
           ) : (
             <div className="flex flex-col items-center justify-center pt-20 text-center">
-              <Music className="text-muted-foregorund h-10 w-10" />
+              <Music className="text-muted-foreground h-10 w-10" />
               <h2 className="mt-4 text-lg font-semibold">No Music Yet</h2>
               <p className="text-muted-foreground mt-1 text-sm">
                 {searchQuery
