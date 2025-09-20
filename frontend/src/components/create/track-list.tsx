@@ -54,7 +54,7 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
 
   const filteredTracks = tracks.filter(
     (track) =>
-      track.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      track.title?.toLowerCase().includes(searchQuery.toLowerCase()) ??
       track.prompt?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
@@ -200,7 +200,7 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
                           />
                         ) : (
                           <div className="bg-muted flex h-full w-full items-center justify-center">
-                            <Music className=" h-6 w-6" /> 
+                            <Music className="h-6 w-6" />
                           </div> // text-muted-foreground
                         )}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity group-hover:opacity-100">

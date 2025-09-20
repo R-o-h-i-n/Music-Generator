@@ -150,7 +150,11 @@ export function SongPanel() {
       setLyrics("");
       setStyleInput("");
     } catch (error) {
-      toast.error("Failed to generate song." + error);
+      if (error instanceof Error) {
+        toast.error(`Failed to generate song: ${error.message}`);
+      } else {
+        toast.error("An unknown error occurred while generating the song.");
+      }
     } finally {
       setLoading(false);
     }
@@ -206,7 +210,7 @@ export function SongPanel() {
 
             <div className="flex flex-col gap-3">
               <label className="text-sm font-medium">Inspiration</label>
-              <div className="overflow-x-auto w-full whitespace-nowrap">
+              <div className="w-full overflow-x-auto whitespace-nowrap">
                 <div className="flex gap-2 pb-2">
                   {inspirationTags.map((tag) => (
                     <Button

@@ -8,9 +8,7 @@ import { Sidebar,
          SidebarGroup, 
          SidebarGroupContent, 
          SidebarGroupLabel, 
-         SidebarMenu, 
-         SidebarMenuButton, 
-         SidebarMenuItem } from "../ui/sidebar"
+         SidebarMenu } from "../ui/sidebar"
 import SidebarMenuItems from "./sidebar-menu-items"
 import { Credits } from "./credits"
 import { UserButton } from "@daveyplate/better-auth-ui"

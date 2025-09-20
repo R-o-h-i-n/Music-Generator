@@ -19,7 +19,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { set } from "better-auth";
 
 export default function SoundBar() {
   const { track } = usePlayerStore();
@@ -87,14 +86,14 @@ export default function SoundBar() {
     }
   }, [volume]);
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     if (!track?.url || !audioRef.current) return;
 
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play();
+      await audioRef.current.play();
       setIsPlaying(true);
     }
   };
